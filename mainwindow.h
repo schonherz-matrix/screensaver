@@ -17,6 +17,9 @@ class MainWindow : public QMainWindow {
 
  private slots:
   void on_urlLineEdit_returnPressed();
+  void readShaders();
+  void readSandbox(QNetworkReply *reply);
+  void on_shaderLoadButton_clicked();
 
  private:
   Ui::MainWindow *ui;

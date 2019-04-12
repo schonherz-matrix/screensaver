@@ -2,20 +2,28 @@
 #define OWIDGET_H
 
 #include <muebtransmitter.h>
-#include <QMap>
+#include <QList>
 #include <QOpenGLBuffer>
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLWidget>
+#include <QTimer>
 
 class OWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   Q_OBJECT
+
  public:
   OWidget(QWidget *parent = nullptr);
 
  public slots:
-  void compileShader(const QByteArray data);
+  bool compileFromSandbox(const QString data);
+  bool compileFromFile(QString path);
+  void setSpeed(int value);
+  void setShaderProgram(int id);
+
+ signals:
+  void ready();
 
   // QOpenGLWidget interface
  protected:
@@ -24,18 +32,19 @@ class OWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   void resizeGL(int w, int h) override;
 
  private:
+  void locationInit();
+
   QOpenGLVertexArrayObject vao;
   QOpenGLBuffer vbo;
   QOpenGLBuffer surfaceBuffer;
-  QOpenGLShaderProgram program;
+  QOpenGLShaderProgram *program;
   QOpenGLBuffer buffer;
   QMap<QString, int> locations;
   GLfloat time = 0;
   MUEBTransmitter transmitter;
-
-  // QObject interface
- protected:
-  void timerEvent(QTimerEvent *event) override;
+  int speed = 50;
+  QTimer timer;
+  QList<QOpenGLShaderProgram *> programs;
 };
 
 #endif  // OWIDGET_H
