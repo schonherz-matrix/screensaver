@@ -50,3 +50,5 @@ void MainWindow::readSandbox(QNetworkReply *reply) {
 }
 
 void MainWindow::on_shaderLoadButton_clicked() { readShaders(); }
+
+void MainWindow::on_pushButton_clicked() { on_urlLineEdit_returnPressed(); }

@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow {
   void readShaders();
   void readSandbox(QNetworkReply *reply);
   void on_shaderLoadButton_clicked();
+  void on_pushButton_clicked();
 
  private:
   Ui::MainWindow *ui;
