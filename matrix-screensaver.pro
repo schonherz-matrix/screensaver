@@ -48,5 +48,11 @@ else:unix: LIBS += -L$$PWD/lib/mueb/ -lmueb
 INCLUDEPATH += $$PWD/lib/mueb
 DEPENDPATH += $$PWD/lib/mueb
 
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/mueb/release/libmueb.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/lib/mueb/debug/libmueb.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/mueb/release/mueb.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/lib/mueb/debug/mueb.lib
+else:unix: PRE_TARGETDEPS += $$PWD/lib/mueb/libmueb.a
+
 RESOURCES += \
     shaders.qrc
