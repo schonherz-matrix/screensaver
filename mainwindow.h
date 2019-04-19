@@ -16,13 +16,13 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  private slots:
-  void on_urlLineEdit_returnPressed();
   void readShaders();
   void readSandbox(QNetworkReply *reply);
   void on_shaderLoadButton_clicked();
-  void on_pushButton_clicked();
+  void on_urlInput_activated(const QString &arg1);
+  void on_saveToFileBtn_clicked();
 
- private:
+  private:
   Ui::MainWindow *ui;
   QNetworkAccessManager manager;
 };

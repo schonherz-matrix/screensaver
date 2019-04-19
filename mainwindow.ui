@@ -58,12 +58,19 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QLineEdit" name="urlLineEdit"/>
+          <widget class="QComboBox" name="urlInput">
+           <property name="editable">
+            <bool>true</bool>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="saveToFileBtn">
            <property name="text">
-            <string>Get</string>
+            <string>Save to file</string>
            </property>
           </widget>
          </item>

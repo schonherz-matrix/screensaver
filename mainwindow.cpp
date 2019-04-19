@@ -20,12 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::on_urlLineEdit_returnPressed() {
-  QString url = ui->urlLineEdit->text();
-  url = "http://glslsandbox.com/item/" + url.mid(url.indexOf('#') + 1);
-  manager.get(QNetworkRequest(url));
-}
-
 void MainWindow::readShaders() {
   QDir dir("shaders");
   QListIterator<QFileInfo> it(
@@ -41,14 +35,34 @@ void MainWindow::readShaders() {
 
 void MainWindow::readSandbox(QNetworkReply *reply) {
   bool ret;
-  QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+  QByteArray data = reply->readAll();
+  QJsonDocument doc = QJsonDocument::fromJson(data);
   ret = ui->openGLWidget->compileFromSandbox(
       doc.object().value("code").toString());
   if (!ret) return;
-  ui->shaderSelection->addItem(reply->url().fileName());
-  ui->shaderSelection->setCurrentIndex(ui->shaderSelection->count() - 1);
+  QVariant v(data);
+  ui->urlInput->setItemData(ui->urlInput->currentIndex(), v);
+  reply->deleteLater();
 }
 
 void MainWindow::on_shaderLoadButton_clicked() { readShaders(); }
 
-void MainWindow::on_pushButton_clicked() { on_urlLineEdit_returnPressed(); }
+void MainWindow::on_urlInput_activated(const QString &arg1) {
+  QString url =
+      "http://glslsandbox.com/item/" + arg1.mid(arg1.indexOf('#') + 1);
+  manager.get(QNetworkRequest(url));
+}
+
+void MainWindow::on_saveToFileBtn_clicked() {
+  if (!ui->urlInput->count()) return;
+  QVariant v = ui->urlInput->currentData();
+  auto shader = v.value<QByteArray>();
+  QString url = ui->urlInput->currentText();
+  url = "shaders/" + url.mid(url.indexOf('#') + 1) + ".glsl";
+  QFile file(url);
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return;
+  QJsonDocument doc = QJsonDocument::fromJson(shader);
+  file.write(doc.object().value("code").toString().toUtf8());
+  file.close();
+  readShaders();
+}
