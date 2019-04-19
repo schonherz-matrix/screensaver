@@ -27,7 +27,8 @@ void MainWindow::readShaders() {
   while (it.hasNext()) {
     QFileInfo file = it.next();
     if (ui->shaderSelection->findText(file.fileName()) >= 0) continue;
-    bool ret = ui->openGLWidget->compileFromFile(file.absoluteFilePath());
+    bool ret = ui->openGLWidget->compileFromFile(file.absoluteFilePath(),
+                                                 file.fileName());
     if (!ret) continue;
     ui->shaderSelection->addItem(file.fileName());
   }
@@ -37,8 +38,9 @@ void MainWindow::readSandbox(QNetworkReply *reply) {
   bool ret;
   QByteArray data = reply->readAll();
   QJsonDocument doc = QJsonDocument::fromJson(data);
+  QString url = ui->urlInput->currentText();
   ret = ui->openGLWidget->compileFromSandbox(
-      doc.object().value("code").toString());
+      doc.object().value("code").toString(), url.mid(url.indexOf('#') + 1));
   if (!ret) return;
   QVariant v(data);
   ui->urlInput->setItemData(ui->urlInput->currentIndex(), v);
@@ -50,6 +52,10 @@ void MainWindow::on_shaderLoadButton_clicked() { readShaders(); }
 void MainWindow::on_urlInput_activated(const QString &arg1) {
   QString url =
       "http://glslsandbox.com/item/" + arg1.mid(arg1.indexOf('#') + 1);
+  if (!ui->urlInput->currentData().isNull()) {
+    ui->openGLWidget->setShaderProgram(arg1.mid(arg1.indexOf('#') + 1));
+    return;
+  };
   manager.get(QNetworkRequest(url));
 }
 

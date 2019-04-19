@@ -175,7 +175,7 @@
    <header location="global">owidget.h</header>
    <slots>
     <slot>setSpeed(int)</slot>
-    <slot>setShaderProgram(int)</slot>
+    <slot>setShaderProgram(QString)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -188,12 +188,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>239</x>
-     <y>134</y>
+     <x>297</x>
+     <y>188</y>
     </hint>
     <hint type="destinationlabel">
-     <x>301</x>
-     <y>134</y>
+     <x>382</x>
+     <y>187</y>
     </hint>
    </hints>
   </connection>
@@ -204,12 +204,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>303</x>
-     <y>113</y>
+     <x>382</x>
+     <y>187</y>
     </hint>
     <hint type="destinationlabel">
-     <x>239</x>
-     <y>113</y>
+     <x>297</x>
+     <y>188</y>
     </hint>
    </hints>
   </connection>
@@ -220,28 +220,28 @@
    <slot>setSpeed(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>81</x>
-     <y>123</y>
+     <x>139</x>
+     <y>188</y>
     </hint>
     <hint type="destinationlabel">
-     <x>17</x>
-     <y>61</y>
+     <x>26</x>
+     <y>183</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>shaderSelection</sender>
-   <signal>activated(int)</signal>
+   <signal>activated(QString)</signal>
    <receiver>openGLWidget</receiver>
-   <slot>setShaderProgram(int)</slot>
+   <slot>setShaderProgram(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>83</x>
-     <y>184</y>
+     <x>139</x>
+     <y>265</y>
     </hint>
     <hint type="destinationlabel">
-     <x>37</x>
-     <y>66</y>
+     <x>15</x>
+     <y>177</y>
     </hint>
    </hints>
   </connection>

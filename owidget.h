@@ -2,7 +2,7 @@
 #define OWIDGET_H
 
 #include <muebtransmitter.h>
-#include <QList>
+#include <QMap>
 #include <QOpenGLBuffer>
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
@@ -17,10 +17,10 @@ class OWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   OWidget(QWidget *parent = nullptr);
 
  public slots:
-  bool compileFromSandbox(const QString data);
-  bool compileFromFile(QString path);
+  bool compileFromSandbox(const QString data, const QString name);
+  bool compileFromFile(QString path, const QString name);
   void setSpeed(int value);
-  void setShaderProgram(int id);
+  void setShaderProgram(const QString name);
 
  signals:
   void ready();
@@ -44,7 +44,7 @@ class OWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   MUEBTransmitter transmitter;
   int speed = 50;
   QTimer timer;
-  QList<QOpenGLShaderProgram *> programs;
+  QMap<QString, QOpenGLShaderProgram *> programs;
 };
 
 #endif  // OWIDGET_H

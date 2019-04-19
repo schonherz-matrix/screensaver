@@ -19,12 +19,13 @@ OWidget::OWidget(QWidget *parent)
   });
 
   program = new QOpenGLShaderProgram(this);
-  programs.append(program);
+  programs["Default(Sin/Cos)"] = program;
 }
 
-bool OWidget::compileFromSandbox(const QString data) {
+bool OWidget::compileFromSandbox(const QString data, const QString name) {
   bool ret;
   timer.stop();
+  time = 0;
   auto prog = new QOpenGLShaderProgram(this);
 
   prog->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vertex.glsl");
@@ -37,16 +38,17 @@ bool OWidget::compileFromSandbox(const QString data) {
   }
 
   locationInit();
-  programs.append(prog);
+  programs[name] = prog;
   program = prog;
   timer.start();
 
   return ret;
 }
 
-bool OWidget::compileFromFile(QString path) {
+bool OWidget::compileFromFile(QString path, const QString name) {
   bool ret;
   timer.stop();
+  time = 0;
   auto prog = new QOpenGLShaderProgram(this);
   prog->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vertex.glsl");
   prog->addShaderFromSourceFile(QOpenGLShader::Fragment, path);
@@ -58,7 +60,7 @@ bool OWidget::compileFromFile(QString path) {
   }
 
   locationInit();
-  programs.append(prog);
+  programs[name] = prog;
   timer.start();
 
   return ret;
@@ -66,9 +68,10 @@ bool OWidget::compileFromFile(QString path) {
 
 void OWidget::setSpeed(int value) { speed = value; }
 
-void OWidget::setShaderProgram(int id) {
+void OWidget::setShaderProgram(const QString name) {
   timer.stop();
-  program = programs[id];
+  program = programs[name];
+  time = 0;
   timer.start();
 }
 
