@@ -1,4 +1,0 @@
-[submodule "lib/mueb"]
-	path = lib/mueb
-	url = https://git.sch.bme.hu/matrix-group/mueb.git
-	ignore = dirty
