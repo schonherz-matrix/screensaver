@@ -41,7 +41,7 @@ class OWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   QOpenGLBuffer buffer;
   QMap<QString, int> locations;
   GLfloat time = 0;
-  MUEBTransmitter transmitter;
+  MuebTransmitter transmitter;
   int speed = 50;
   QTimer timer;
   QMap<QString, QOpenGLShaderProgram *> programs;

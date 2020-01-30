@@ -153,7 +153,7 @@
      <x>0</x>
      <y>0</y>
      <width>403</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -172,7 +172,7 @@
   <customwidget>
    <class>OWidget</class>
    <extends>QOpenGLWidget</extends>
-   <header location="global">owidget.h</header>
+   <header>owidget.h</header>
    <slots>
     <slot>setSpeed(int)</slot>
     <slot>setShaderProgram(QString)</slot>
