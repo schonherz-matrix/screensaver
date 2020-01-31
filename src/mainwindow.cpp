@@ -1,74 +1,52 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QDir>
-#include <QFileInfo>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QNetworkReply>
-#include <QOpenGLShader>
-#include <QOpenGLShaderProgram>
-
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), manager(this) {
+    : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
-  connect(&manager, &QNetworkAccessManager::finished, this,
-          &MainWindow::readSandbox);
 
-  connect(ui->openGLWidget, &OWidget::ready, this, &MainWindow::readShaders);
+  connect(m_currentAnimator, &OpenGLAnimator::speedChanged,
+          ui->speedDoubleSpinBox, &QDoubleSpinBox::setValue);
+  connect(m_currentAnimator, &OpenGLAnimator::speedChanged, ui->speedSlider,
+          &QSlider::setValue);
+
+  ui->speedDoubleSpinBox->setValue(m_currentAnimator->speed());
+
+  m_currentAnimator->cacheLocalShaders();
+  ui->shaderSelection->addItems(m_currentAnimator->localShaders());
+
+  startTimer(1000 / 60);
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::readShaders() {
-  QDir dir("shaders");
-  QListIterator<QFileInfo> it(
-      dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot));
-  while (it.hasNext()) {
-    QFileInfo file = it.next();
-    if (ui->shaderSelection->findText(file.fileName()) >= 0) continue;
-    bool ret = ui->openGLWidget->compileFromFile(file.absoluteFilePath(),
-                                                 file.fileName());
-    if (!ret) continue;
-    ui->shaderSelection->addItem(file.fileName());
+void MainWindow::on_shaderLoadButton_clicked() {
+  for (auto shader : m_currentAnimator->localShaders()) {
+    if (ui->shaderSelection->findText(shader) < 0)
+      ui->shaderSelection->addItem(shader);
   }
 }
 
-void MainWindow::readSandbox(QNetworkReply *reply) {
-  bool ret;
-  QByteArray data = reply->readAll();
-  QJsonDocument doc = QJsonDocument::fromJson(data);
-  QString url = ui->urlInput->currentText();
-  ret = ui->openGLWidget->compileFromSandbox(
-      doc.object().value("code").toString(), url.mid(url.indexOf('#') + 1));
-  if (!ret) return;
-  QVariant v(data);
-  ui->urlInput->setItemData(ui->urlInput->currentIndex(), v);
-  reply->deleteLater();
-}
-
-void MainWindow::on_shaderLoadButton_clicked() { readShaders(); }
-
 void MainWindow::on_urlInput_activated(const QString &arg1) {
-  QString url =
-      "http://glslsandbox.com/item/" + arg1.mid(arg1.indexOf('#') + 1);
-  if (!ui->urlInput->currentData().isNull()) {
-    ui->openGLWidget->setShaderProgram(arg1.mid(arg1.indexOf('#') + 1));
-    return;
-  };
-  manager.get(QNetworkRequest(url));
+  m_currentAnimator->setShader(arg1);
 }
 
 void MainWindow::on_saveToFileBtn_clicked() {
-  if (!ui->urlInput->count()) return;
-  QVariant v = ui->urlInput->currentData();
-  auto shader = v.value<QByteArray>();
-  QString url = ui->urlInput->currentText();
-  url = "shaders/" + url.mid(url.indexOf('#') + 1) + ".glsl";
-  QFile file(url);
-  if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return;
-  QJsonDocument doc = QJsonDocument::fromJson(shader);
-  file.write(doc.object().value("code").toString().toUtf8());
-  file.close();
-  readShaders();
+  m_currentAnimator->saveToDisk(ui->urlInput->currentText());
+}
+
+void MainWindow::timerEvent(QTimerEvent *) {
+  m_transmitter.sendFrame(m_currentAnimator->nextFrame());
+}
+
+void MainWindow::on_shaderSelection_activated(const QString &arg1) {
+  m_currentAnimator->setShader(arg1);
+}
+
+void MainWindow::on_speedDoubleSpinBox_valueChanged(double arg1) {
+  m_currentAnimator->setSpeed(arg1);
+}
+
+void MainWindow::on_speedSlider_valueChanged(int value) {
+  m_currentAnimator->setSpeed(value);
 }

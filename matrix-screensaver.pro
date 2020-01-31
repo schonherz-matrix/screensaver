@@ -20,13 +20,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 HEADERS += \
+    src/glslsandboxanimator.h \
     src/mainwindow.h \
-    src/owidget.h
+    src/openglanimator.h
 
 SOURCES += \
+    src/glslsandboxanimator.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
-    src/owidget.cpp
+    src/openglanimator.cpp
 
 FORMS += \
     src/mainwindow.ui
