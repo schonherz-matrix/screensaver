@@ -33,6 +33,8 @@ class MainWindow : public QMainWindow {
 
   void on_speedSlider_valueChanged(int value);
 
+  void on_autoPlay_stateChanged(int arg1);
+
  private:
   GLSLSandboxAnimator m_sandbox{this};
   MuebTransmitter m_transmitter{this};

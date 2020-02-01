@@ -9,6 +9,13 @@ MainWindow::MainWindow(QWidget *parent)
           ui->speedDoubleSpinBox, &QDoubleSpinBox::setValue);
   connect(m_currentAnimator, &OpenGLAnimator::speedChanged, ui->speedSlider,
           &QSlider::setValue);
+  connect(m_currentAnimator, &OpenGLAnimator::shaderChanged, this,
+          [&](QString id) {
+            if (ui->shaderSelection->findText(id) < 0)
+              ui->shaderSelection->addItem(id);
+
+            ui->shaderSelection->setCurrentText(id);
+          });
 
   ui->speedDoubleSpinBox->setValue(m_currentAnimator->speed());
 
@@ -49,4 +56,24 @@ void MainWindow::on_speedDoubleSpinBox_valueChanged(double arg1) {
 
 void MainWindow::on_speedSlider_valueChanged(int value) {
   m_currentAnimator->setSpeed(value);
+}
+
+void MainWindow::on_autoPlay_stateChanged(int arg1) {
+  if (arg1 == Qt::Checked) {
+    ui->shaderSelection->setDisabled(true);
+    ui->saveToFileBtn->setDisabled(true);
+    ui->shaderLoadButton->setDisabled(true);
+    ui->urlInput->setDisabled(true);
+
+    m_currentAnimator->startAutoPlay();
+  }
+
+  else if (arg1 == Qt::Unchecked) {
+    ui->shaderSelection->setEnabled(true);
+    ui->saveToFileBtn->setEnabled(true);
+    ui->shaderLoadButton->setEnabled(true);
+    ui->urlInput->setEnabled(true);
+
+    m_currentAnimator->stopAutoPlay();
+  }
 }

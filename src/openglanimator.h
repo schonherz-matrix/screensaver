@@ -31,10 +31,17 @@ class OpenGLAnimator : public QObject, protected QOpenGLFunctions {
   void setShader(const QUrl url);
   void setSpeed(double value);
   void cacheLocalShaders();
+  void startAutoPlay();
+  void stopAutoPlay();
+
+  // QObject interface
+ protected:
+  void timerEvent(QTimerEvent *event) override;
 
  signals:
   void frameChanged(QImage frame);
   void speedChanged(double speed);
+  void shaderChanged(QString id);
 
  protected:
   QOffscreenSurface m_surface;
@@ -48,6 +55,8 @@ class OpenGLAnimator : public QObject, protected QOpenGLFunctions {
   QOpenGLVertexArrayObject m_vao;
   QOpenGLBuffer m_vbo{QOpenGLBuffer::VertexBuffer};
   QOpenGLBuffer m_ebo{QOpenGLBuffer::IndexBuffer};
+  int m_timerId = 0;
+  int m_currentShaderIdx = 0;
 
   virtual bool readFromOnline(QUrl url) = 0;
   virtual bool readFromLocal(QFile file) = 0;

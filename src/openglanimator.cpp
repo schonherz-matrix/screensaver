@@ -1,5 +1,7 @@
 #include "openglanimator.h"
 
+#include <chrono>
+
 static const float vertices[] = {
     1.0f,  1.0f,  0.0f,  // top right
     1.0f,  -1.0f, 0.0f,  // bottom right
@@ -59,6 +61,9 @@ void OpenGLAnimator::setShader(const QUrl url) {
   if (m_currentProgram != m_programs[id]) {
     m_currentProgram = m_programs[id];
     m_currentProgram->bind();
+
+    m_currentShaderIdx = localShaders().indexOf(id);
+    emit shaderChanged(id);
   }
 }
 
@@ -71,6 +76,25 @@ void OpenGLAnimator::cacheLocalShaders() {
   for (auto file : localShaders()) {
     readFromLocal(file);
   }
+}
+
+void OpenGLAnimator::startAutoPlay() {
+  using namespace std::chrono_literals;
+
+  if (localShaders().size() <= 1) return;
+
+  m_timerId = startTimer(30s);
+}
+
+void OpenGLAnimator::stopAutoPlay() { killTimer(m_timerId); }
+
+void OpenGLAnimator::timerEvent(QTimerEvent *) {
+  auto shaders = localShaders();
+
+  m_currentShaderIdx++;
+  if (m_currentShaderIdx >= shaders.size()) m_currentShaderIdx = 0;
+
+  setShader(shaders[m_currentShaderIdx]);
 }
 
 double OpenGLAnimator::speed() const { return m_speed; }
