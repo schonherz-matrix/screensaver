@@ -1,8 +1,11 @@
 #include "mainwindow.h"
+
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow) {
+    : QMainWindow(parent),
+      m_transmitter(MuebTransmitter::getInstance()),
+      ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
   connect(m_currentAnimator, &OpenGLAnimator::speedChanged,

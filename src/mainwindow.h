@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+
 #include "glslsandboxanimator.h"
 #include "muebtransmitter.h"
 
@@ -36,8 +37,8 @@ class MainWindow : public QMainWindow {
   void on_autoPlay_stateChanged(int arg1);
 
  private:
+  MuebTransmitter &m_transmitter;
   GLSLSandboxAnimator m_sandbox{this};
-  MuebTransmitter m_transmitter{this};
   Ui::MainWindow *ui;
   OpenGLAnimator *m_currentAnimator{&m_sandbox};
 };
