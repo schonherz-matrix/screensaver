@@ -37,3 +37,8 @@ add_executable(
   src/shaders.qrc)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets Qt5::Network
                                               libmueb::muebtransmitter)
+
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT "${TARGETS_EXPORT_NAME}"
+  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
