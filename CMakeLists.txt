@@ -25,7 +25,7 @@ find_package(
 find_package(libmueb 2.0 REQUIRED)
 
 add_executable(
-  ${PROJECT_NAME}
+  ${PROJECT_NAME} WIN32
   src/glslsandboxanimator.h
   src/mainwindow.h
   src/openglanimator.h
