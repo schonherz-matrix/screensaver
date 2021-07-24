@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(
-  matrix-screensaver
+  screensaver
   DESCRIPTION "Animating shaders for Schönherz Mátrix"
   HOMEPAGE_URL "kszk.bme.hu"
   LANGUAGES CXX)
